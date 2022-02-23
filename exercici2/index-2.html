@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercici 2 - 2022</title>
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@next"></script>
+    <style>
+      main {
+        display: flex;
+      }
+      #container {
+        width: 170px;
+      }
+      .item {
+        display: flex;
+        flex-direction: column;
+        margin: 18px 4px;
+        cursor: pointer;
+        border: 1px solid grey;
+      }
+      .item img {
+        width: 160px;
+      }
+      .item-text {
+        text-align: center;
+      }
+      .item-points {
+        margin: 4px 0px;
+        text-align: center;
+      }
+
+      #formulari {
+        padding: 20px 20px;
+      }
+      .row {
+        margin: 12px 0px;
+      }
+      #formulari button {
+        padding: 10px 14px;
+      }
+    </style>
+  </head>
+  <body>
+  <div id="app">
+
+    <main>
+      <div id="container">
+
+        <div class="item" v-for="avatar in avatars" v-on:click="addPoints(avatar.id)">
+          <img v-bind:src="'images/avatar' + avatar.imageFile + '.png'" alt=""/>
+          <div class="item-text">{{ avatar.name }}</div>
+          <div class="item-points">POINTS: {{ avatar.points }}</div>
+          <button v-on:click="deleteAvatar(avatar.id)">Eliminar</button>
+        </div>
+      </div>
+
+      <div id="formulari">
+        <div class="row">
+          <label>Name:</label>
+          <input type="text" id="inputName" required v-model="avatarName"/>
+        </div>
+        <div class="row">
+          <label>Image:</label>
+          <input type="text" id="inputImage" required min="1" max="3" v-model="avatarImage"/>
+        </div>
+        <div class="row">
+          <button v-on:click="addAvatar()">Guardar</button>
+        </div>
+        <div class="row">
+          <button v-on:click="orderAvatars()">Ordenar por nombre</button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+    
+  </body>
+  <script>
+    const app = {
+      data() {
+        return {
+          valueId: 4, //  // This is starting at 4 because there are already 4 items. Otherwise objects could have the same id and crud operations would broke or get crazy
+          avatarName: "",
+          avatarImage: "",
+          avatarPoints: 0,
+
+          avatars: [
+            { name: "Beppe Sanson", imageFile: 1, points: 0, id: 1 },
+            { name: "Ida Trentino", imageFile: 2, points: 0, id: 2 },
+            { name: "Zalma Marconi", imageFile: 3, points: 0, id: 3 },
+            { name: "Franco Rimini", imageFile: 1, points: 0, id: 4 },
+          ],
+
+        }
+      },
+      methods: {
+
+        // Adding new Avatar
+        addAvatar() {
+          this.valueId++;
+          let avatar = {
+            name: this.avatarName,
+            imageFile: parseInt(this.avatarImage),
+            points: 0,
+            id: this.valueId,
+          }
+          this.avatars.push(avatar);
+
+          // Reseting inputs to empty values
+          this.avatarName = "";
+          this.avatarImage = "";
+        },
+
+        // Adding 1 point to clicked avatar
+        addPoints(id) {
+          let editedAvatar = this.avatars.find( item => item.id === id);
+          editedAvatar.points++;
+        },
+
+        // Deleting avatar
+        deleteAvatar(id) {
+          console.log(id);
+          this.avatars = this.avatars.filter((element) => element.id !== id);
+        },
+
+        // Order Avatar alphabetically
+        orderAvatars() {
+          this.avatars = this.avatars.sort( (a,b) => a.name.localeCompare(b.name))
+        }
+
+      }
+    }
+    Vue.createApp(app).mount('#app')
+  </script>
+</html>

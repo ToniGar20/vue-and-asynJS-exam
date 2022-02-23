@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercici 1 - 2022</title>
+    <style>
+      main {
+        display: flex;
+      }
+      #container {
+        width: 170px;
+      }
+      .item {
+        display: flex;
+        flex-direction: column;
+        margin: 18px 4px;
+        cursor: pointer;
+        border: 1px solid grey;
+      }
+      .item img {
+        width: 160px;
+      }
+      .item-text {
+        text-align: center;
+      }
+      .item-points {
+        margin: 4px 0px;
+        text-align: center;
+      }
+
+      #formulari {
+        padding: 20px 20px;
+      }
+      .row {
+        margin: 12px 0px;
+      }
+      button {
+        padding: 10px 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="container">
+
+        <!-- EXEMPLE DE CARD PER UN AVATAR -->
+        <div class="item">
+          <img src="images/avatar1.png"/>
+          <div class="item-text">nom</div>
+          <div class="item-points">POINTS: </div>
+        </div>
+      </div>
+
+      <div id="formulari">
+        <div class="row">
+          <label>Name:</label>
+          <input type="text" id="inputName" required/>
+        </div>
+        <div class="row">
+          <label>Image:</label>
+          <input type="text" id="inputImage" required min="1" max="3"/>
+        </div>
+        <div class="row">
+          <button onclick="addAvatar()">Guardar</button>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script>
+
+    /**
+     * Running the server with:
+     * npm install -g json-server
+     * json-server --watch exercici1/db.json
+     */
+
+    // Main API URL for GET and POST
+    const avatars = 'http://localhost:3000/avatars/'
+
+    // Displaying the info of the avatars -> GET
+    fetch(avatars)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        let contentHolder = "";
+        data.forEach( item => {
+          contentHolder += `
+            <div class="item" id="${item.id}" onclick="addPoints(${item.id})">
+              <img src="images/avatar${item.imageFile}.png"/>
+              <div class="item-text">${item.name}</div>
+              <div class="item-points">POINTS: ${item.points}</div>
+            </div>`;
+        });
+        document.getElementById("container").innerHTML = contentHolder;
+      })
+      .catch(function (error) {
+        console.log('Error with Fetch:', error);
+      });
+
+    //Creating new avatar -> POST
+    function addAvatar () {
+      fetch(avatars, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: document.getElementById("inputName").value,
+          imageFile: document.getElementById("inputImage").value,
+          points: 0,
+          id: parseInt(Math.random() * 1000),
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      })
+              .then((response) => response.json())
+
+      window.location.reload();
+    }
+
+    //Modifying points parameter of the object -> PUT
+    function addPoints (objectId) {
+      let currentAvatarDOMChildren = document.getElementById(objectId).children;
+      let currentAvatarPoints = parseInt(currentAvatarDOMChildren[2].innerHTML.split(" ")[1]);
+      fetch(avatars + objectId, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          points: currentAvatarPoints+1,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      })
+              .then((response) => response.json())
+
+      window.location.reload();
+    }
+  
+  </script>
+</html>
