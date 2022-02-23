@@ -17,13 +17,20 @@ Use `db.json` file with some data
 
 ```json
 {
-  "posts": [
-    { "id": 1, "title": "json-server", "author": "typicode" }
-  ],
-  "comments": [
-    { "id": 1, "body": "some comment", "postId": 1 }
-  ],
-  "profile": { "name": "typicode" }
+    ...
+    {
+      "name": "Zwaya Maar",
+      "imageFile": 3,
+      "points": 2,
+      "id": 3
+    },
+    {
+      "name": "Toni García",
+      "imageFile": "1",
+      "points": 80,
+      "id": 175
+    },
+    ...
 }
 ```
 
